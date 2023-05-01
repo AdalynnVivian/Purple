@@ -246,12 +246,20 @@ class has_singleton (α: Sort u) (γ: out_param $ Sort w) :=
 class has_insert (α: Sort u) (β: Sort v) (γ: out_param $ Sort w) :=
   (insert: α → β → γ)
 -- (a,b)
-/- Keep getting errors with this one! 
--/
-instance: has_singleton Prop Prop := ⟨sorry⟩
-instance: has_insert Prop Prop Prop := ⟨sorry⟩
-
-constant p: Prop
-instance: has_add Prop Prop Prop := ⟨sorry⟩
-
-#check p+p
+class has_pair (α: Sort u) (β: Sort v) (γ: out_param $ Sort w) :=
+  (pair: α → β → γ)
+def prod.mk {α: Sort u} {β: Sort v} {γ: out_param $ Sort w} [has_pair α β γ] (a: α) (b: β) :=
+  has_pair.pair a b
+-- {x: X | ϕ(x)}
+class has_class_of (α: Sort u) (γ: out_param $ Sort w) :=
+  (class_of: (α → Prop) → γ)
+def set_of {α: Sort u} {γ: out_param $ Sort w} [has_class_of α γ] (ϕ: α → Prop) :=
+  has_class_of.class_of ϕ
+-- {x: X // ϕ(x)}
+class has_subtype (α: Sort u) (γ: out_param $ Sort w) :=
+  (subtype_of: (α → Prop) → γ)
+def subtype {α: Sort u} {γ: out_param $ Sort w} [has_subtype α γ] (ϕ: α → Prop) :=
+  has_subtype.subtype_of ϕ
+-- {x∈X | ϕ(x)}
+class has_sep (α: Sort u) (β: Sort v) (γ: out_param $ Sort w) :=
+  (sep: (α → Prop) → β → γ)
