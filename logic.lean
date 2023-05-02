@@ -14,7 +14,6 @@ def not (p: Prop) := p → ⊥
 instance lnot_Prop: has_lnot Prop Prop :=
   ⟨not⟩
 axiom double_neg {p: Prop}: ¬¬p → p
-
 structure and (p q: Prop) : Prop :=
   intro :: (left: p) (right: q)
 instance Prop_wedge_Prop: has_wedge Prop Prop Prop :=
@@ -32,6 +31,9 @@ instance Prop_leftrightarrow_Prop: has_leftrightarrow Prop Prop Prop := ⟨iff�
 
 def equ {α: Sort u} (a b: α) : Prop := ∀ϕ: α → Prop, ϕ a ↔ ϕ b
 instance homo_eq(α: Sort u): has_eq α α Prop := ⟨equ⟩
+
+axiom prop_ext {p q: Prop} : (p↔q) ↔ p=q
+
 def neq {α: Sort u} (a b: α) := ¬(a = b)
 instance homo_neq(α: Sort u): has_ne α α Prop := ⟨neq⟩
 
@@ -106,8 +108,10 @@ lemma mt {p q: Prop} : (p → q) → (¬q → ¬p) :=
       λhp: p,
         hnq (h hp)
 lemma not_false: ¬⊥ := trivial
-lemma equ.mp {α β: Sort u} : (α = β) → (α → β) := sorry --Unsure
-lemma equ.mpr {α β: Sort u} : (α = β) → (β → α) := sorry --Unsure
+lemma equ.mp {α β: Sort u} : (α = β) → (α → β) := sorry
+lemma equ.mpr {α β: Sort u} : (α = β) → (β → α) :=
+  λh: α = β,
+    equ.mp (equ.symm h) --Unsure
 lemma equ.substr {α: Sort u} {P: α → Prop} {a b: α} : a = b → P a → P b := sorry
 lemma congr {α: Sort u} {β: Sort v} {f g: α → β} {a b: α}: f = g → a = b → f a = g b :=
   λh₁: f = g,
@@ -129,5 +133,5 @@ lemma trans_rel_right {α: Sort u} {a b c: α} (r: α → α → Prop) : a = b �
   λh₁: a = b,
     λh₂: r b c,
       (h₁ (λx, r x c)).mpr h₂
-lemma of_eq_true {p: Prop} (h: p = ⊤) : p := sorry
-lemma not_of_eq_false {p: Prop} (h: p = ⊥) : ¬p := sorry
+lemma of_eq_true {p: Prop} (h: p = ⊤) : p := equ.mpr h trivial
+lemma not_of_eq_false {p: Prop} (h: p = ⊥) : ¬p := equ.mp h
