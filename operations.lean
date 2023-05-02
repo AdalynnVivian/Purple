@@ -231,10 +231,22 @@ section --"NORMAL" operators
     postfix `⁻¹` := has_inv.inv
   reserve postfix `ᶜ`:1034
     class has_com :=
-      (com: α → β → γ)
+      (com: α → γ)
     postfix `ᶜ` := has_comp.comp
+  reserve postfix `*`:1034
+    class has_postfix_mul :=
+      (postfix_mul: α → γ)
+    postfix `*` := has_postfix_mul.postfix_mul
+  reserve postfix `+`:1034
+    class has_postfix_plus :=
+      (postfix_plus: α → γ)
+    postfix `+` := has_postfix_plus.postfix_plus
+  reserve postfix `×`:1034
+    class has_postfix_times :=
+      (postfix_times: α → γ)
+    postfix `×` := has_postfix_times.postfix_times
 end
--- Empty set `\
+-- Empty set `∅`
 class has_emptyc (α: Sort u) := (emptyc: α)
 notation `∅` := has_emptyc.emptyc
 -- `0` and `1` for groups
@@ -256,10 +268,16 @@ class has_class_of (α: Sort u) (γ: out_param $ Sort w) :=
 def set_of {α: Sort u} {γ: out_param $ Sort w} [has_class_of α γ] (ϕ: α → Prop) :=
   has_class_of.class_of ϕ
 -- {x: X // ϕ(x)}
-class has_subtype (α: Sort u) (γ: out_param $ Sort w) :=
-  (subtype_of: (α → Prop) → γ)
-def subtype {α: Sort u} {γ: out_param $ Sort w} [has_subtype α γ] (ϕ: α → Prop) :=
-  has_subtype.subtype_of ϕ
+structure subtype {α: Sort u} (p: α → Prop) :=
+  (val: α)
+  (property: p val)
 -- {x∈X | ϕ(x)}
 class has_sep (α: Sort u) (β: Sort v) (γ: out_param $ Sort w) :=
   (sep: (α → Prop) → β → γ)
+
+-- (,,) [,,] [,,) (,,]
+-- [,]
+-- ⟨⟩ ⟨,⟩
+-- F() F(,) F[] F[,] F⟦⟧ F⟦,⟧
+-- || ||x||
+-- [:]
