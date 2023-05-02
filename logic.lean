@@ -121,9 +121,13 @@ lemma congr_fun {α: Sort u} {β: α → Sort v} {f g: Πx, β x} (h: f = g) (a:
   f a = g a := sorry
 lemma congr_arg {α: Sort u} {β: Sort v} {a b: α} (f: α → β) : a = b → f a = f b :=
   congr (equ.refl f)
-lemma trans_rel_left {α: Sort u} {a b c: α} (r: α → α → Prop) :
-  r a b → b = c → r a c := sorry
-lemma trans_rel_right {α: Sort u} {a b c: α} (r: α → α → Prop) :
-  a = b → r b c → r a c := sorry
+lemma trans_rel_left {α: Sort u} {a b c: α} (r: α → α → Prop) : r a b → b = c → r a c :=
+  λh₁: r a b,
+    λh₂: b = c,
+      (h₂ (λx, r a x)).mp h₁
+lemma trans_rel_right {α: Sort u} {a b c: α} (r: α → α → Prop) : a = b → r b c → r a c :=
+  λh₁: a = b,
+    λh₂: r b c,
+      (h₁ (λx, r x c)).mpr h₂
 lemma of_eq_true {p: Prop} (h: p = ⊤) : p := sorry
 lemma not_of_eq_false {p: Prop} (h: p = ⊥) : ¬p := sorry
