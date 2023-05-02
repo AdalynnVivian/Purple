@@ -8,7 +8,7 @@ universes u v w
 
 notation `Prop` := Sort 0
 notation f ` $ `:1 a:0 := f a
-@[reducible] def out_param (α : Sort u) : Sort u := α
+@[reducible] def out_param (α: Sort u): Sort u := α
 
 section --"NORMAL" operators
   variables (α: Sort u) (β: Sort v) (γ: out_param $ Sort w)
@@ -218,7 +218,7 @@ section --"NORMAL" operators
   reserve infixl ` ∘ `:90
     class has_comp :=
       (comp: α → β → γ)
-  infixl ` ∘ ` := has_comp.comp 
+    infixl ` ∘ ` := has_comp.comp 
   --
   reserve prefix `𝒫`:100
     class has_pow :=
@@ -245,39 +245,8 @@ section --"NORMAL" operators
     class has_postfix_times :=
       (postfix_times: α → γ)
     postfix `×` := has_postfix_times.postfix_times
+  reserve postfix `?`:1034
+    class has_postfix_question_mark :=
+      (postfix_question_mark: α → γ)
+    postfix `?` := has_postfix_question_mark.postfix_question_mark
 end
--- Empty set `∅`
-class has_emptyc (α: Sort u) := (emptyc: α)
-notation `∅` := has_emptyc.emptyc
--- `0` and `1` for groups
-class has_zero (α: Sort u) := (zero: α)
-class has_one (α: Sort u) := (one: α)
--- {a} {a,b} ...
-class has_singleton (α: Sort u) (γ: out_param $ Sort w) :=
-  (singleton: α → γ)
-class has_insert (α: Sort u) (β: Sort v) (γ: out_param $ Sort w) :=
-  (insert: α → β → γ)
--- (a,b)
-class has_pair (α: Sort u) (β: Sort v) (γ: out_param $ Sort w) :=
-  (pair: α → β → γ)
-def prod.mk {α: Sort u} {β: Sort v} {γ: out_param $ Sort w} [has_pair α β γ] (a: α) (b: β) :=
-  has_pair.pair a b
--- {x: X | ϕ(x)}
-class has_class_of (α: Sort u) (γ: out_param $ Sort w) :=
-  (class_of: (α → Prop) → γ)
-def set_of {α: Sort u} {γ: out_param $ Sort w} [has_class_of α γ] (ϕ: α → Prop) :=
-  has_class_of.class_of ϕ
--- {x: X // ϕ(x)}
-structure subtype {α: Sort u} (p: α → Prop) :=
-  (val: α)
-  (property: p val)
--- {x∈X | ϕ(x)}
-class has_sep (α: Sort u) (β: Sort v) (γ: out_param $ Sort w) :=
-  (sep: (α → Prop) → β → γ)
-
--- (,,) [,,] [,,) (,,]
--- [,]
--- ⟨⟩ ⟨,⟩
--- F() F(,) F[] F[,] F⟦⟧ F⟦,⟧
--- || ||x||
--- [:]
