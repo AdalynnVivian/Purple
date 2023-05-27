@@ -132,5 +132,14 @@ inductive nat
   | zero: nat
   | succ(n: nat): nat
 notation `ℕ` := nat
+namespace nat
+  protected def add: ℕ → ℕ → ℕ
+    | a zero := a
+    | a (succ b) := succ (add a b)
+  attribute [pattern] nat.add nat.add._main
+end nat
+instance nat_has_zero: has_zero ℕ := has_zero.mk nat.zero
+instance nat_has_one: has_one ℕ := has_one.mk (nat.succ nat.zero)
+instance nat_add_nat: has_add ℕ ℕ ℕ := has_add.mk nat.add
 
-#check (ℕ × ℕ)*
+lemma nat_add_zero (n: ℕ): n + 0 = n := eq.refl n

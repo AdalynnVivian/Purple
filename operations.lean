@@ -20,8 +20,15 @@ notation `⊤` := has_top.top
 class has_emptyc(α: out_param $ Sort u) :=
   (emptyc: α)
 notation `∅` := has_emptyc.emptyc
+class has_zero(α: Type u) :=
+  (zero: α)
+class has_one(α: Type u) :=
+  (one: α)
+--
 
-
+class has_inv(α: Sort u)(β: out_param $ Sort v) :=
+  (inv: α → β)
+postfix `⁻¹`:1034 := has_inv.inv
 class has_postfix_ast(α: Sort u)(β: out_param $ Sort v) :=
   (postfix_ast: α → β)
 postfix `*`:1034 := has_postfix_ast.postfix_ast
@@ -29,6 +36,9 @@ class has_postfix_question_mark(α: Sort u)(β: out_param $ Sort v) :=
   (postfix_question_mark: α → β)
 postfix `?`:1034 := has_postfix_question_mark.postfix_question_mark
 
+class has_add(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (add: α → β → γ)
+infixl ` + `:65 := has_add.add
 
 class has_eq(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
   (eq: α → β → γ)
