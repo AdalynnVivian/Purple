@@ -1,6 +1,7 @@
 prelude
 
 import .operations
+import .logic
 
 universes u v
 /- Note to self: Figure out how to make this extensible
@@ -10,12 +11,6 @@ universes u v
 - + and a notation declaration
 - EVERY SINGLE TIME!
 -/
-
-inductive option (α : Type u)
-| none : option
-| some (val : α) : option
-
-export option (none some)
 
 /-- Can perform a lifting operation `↑a`. -/
 class has_lift (a : Sort u) (b : Sort v) :=
