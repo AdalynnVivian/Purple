@@ -129,8 +129,8 @@ def xor (p q : 𝔹) := (p ∧ ¬q) ∨ (q ∧ ¬p)
 structure iff (p q: 𝔹): 𝔹 := intro ::
   (mp: p → q)
   (mpr: q → p)
-instance Prop_lr_arrow_Prop: has_lr_arrow 𝔹 𝔹 𝔹 :=
-  has_lr_arrow.mk iff
+instance Prop_lr_arrow_Prop: has_leftrightarrow 𝔹 𝔹 𝔹 :=
+  has_leftrightarrow.mk iff
 
 lemma iff.elim: ((a → b) → (b → a) → c) → (a↔b) → c :=
   λh₁, λh₂, h₁ h₂.mp h₂.mpr

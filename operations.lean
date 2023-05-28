@@ -36,6 +36,11 @@ class has_postfix_question_mark(α: Sort u)(β: out_param $ Sort v) :=
   (postfix_question_mark: α → β)
 postfix `?`:1034 := has_postfix_question_mark.postfix_question_mark
 
+class has_comp(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (comp: α → β → γ)
+infixl ` ∘ `:90 := has_comp.comp
+
+
 class has_add(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
   (add: α → β → γ)
 infixl ` + `:65 := has_add.add
@@ -64,7 +69,23 @@ class has_oplus(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
   (oplus: α → β → γ)
 infixl ` ⊕ `:30 := has_times
 
-class has_lr_arrow(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
-  (lr_arrow: α → β → γ)
-infix ` ↔ `:20 := has_lr_arrow.lr_arrow
+class has_longrightarrow(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (longrightarrow: α → β → γ)
+infixr ` ⟶ `:25 := has_longrightarrow.longrightarrow
+class has_hookrightarrow(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (hookrightarrow: α → β → γ)
+infixr ` ↪ `:25 := has_hookrightarrow.hookrightarrow
+class has_twoheadrightarrow(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (twoheadrightarrow: α → β → γ)
+infixr ` ↠ `:25 := has_twoheadrightarrow.twoheadrightarrow
+class has_rightarrowtail(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (rightarrowtail: α → β → γ)
+infixr ` ↣ `:25 := has_rightarrowtail.rightarrowtail
+class has_twoheadrightarrowtail(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (twoheadrightarrowtail: α → β → γ)
+infixr ` ⤖ `:25 := has_twoheadrightarrowtail.twoheadrightarrowtail
+
+class has_leftrightarrow(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (leftrightarrow: α → β → γ)
+infix ` ↔ `:20 := has_leftrightarrow.leftrightarrow
 
