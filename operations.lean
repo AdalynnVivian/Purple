@@ -43,7 +43,9 @@ infixl ` + `:65 := has_add.add
 class has_eq(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
   (eq: α → β → γ)
 infix ` = `:50 := has_eq.eq
-
+class has_ne(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+  (ne: α → β → γ)
+infix ` ≠ `:50 := has_ne.ne
 class has_lnot(α: Sort u)(β: out_param $ Sort v) :=
   (lnot: α → β)
 prefix `¬`:40 := has_lnot.lnot

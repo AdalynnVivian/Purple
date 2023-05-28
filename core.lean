@@ -126,7 +126,7 @@ inductive list (T: Type u)
   | cons (hd: T) (tl: list): list
 instance Type_postfix_ast: has_postfix_ast (Type u) (Type u) :=
   has_postfix_ast.mk list
-notation `[` l:(foldr `, ` (h t, list.cons h t) list.nil `]`) := l
+notation `[` a `, ` l:(foldr `, ` (h t, list.cons h t) list.nil `]`) := list.cons a l
 
 inductive nat
   | zero: nat
@@ -143,3 +143,5 @@ instance nat_has_one: has_one ℕ := has_one.mk (nat.succ nat.zero)
 instance nat_add_nat: has_add ℕ ℕ ℕ := has_add.mk nat.add
 
 lemma nat_add_zero (n: ℕ): n + 0 = n := eq.refl n
+
+#check [1, 1]
