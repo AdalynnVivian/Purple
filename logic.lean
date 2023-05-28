@@ -3,6 +3,7 @@ prelude
 import .operations
 import .core
 
+set_option pp.beta true
 noncomputable theory
 
 universes u v w
@@ -92,7 +93,7 @@ lemma false_of_ne {α: Sort u} {a: α}: a≠a → ⊥ :=
   ne.irrefl
 
 section
-  variable {p: Prop}
+  variable {p: 𝔹}
 
   lemma ne_false_of_self: p → p≠⊥ :=
     λhp: p, λheq: p = ⊥, heq ▸ hp
@@ -149,7 +150,7 @@ lemma iff.rfl {p: 𝔹}: p↔p :=
     (implies.trans h₂.mpr h₁.mpr)
 @[symm] lemma iff.symm (h: a↔b): b↔a :=
   iff.intro h.mpr h.mp
-lemma iff.com: (a↔b)↔(b↔a) :=
+lemma iff.comm: (a↔b)↔(b↔a) :=
   iff.intro (@iff.symm a b) (@iff.symm b a)
 lemma eq.to_iff {p q: 𝔹} (h: p=q): p↔q :=
   h ▸ iff.refl p
@@ -201,11 +202,11 @@ lemma ne_self_iff_false {α: Sort u} (a: α): a≠a ↔ ⊥ :=
       not_p (h.mpr not_p)
   )
 @[simp] lemma not_iff_self (p: 𝔹): (¬p↔p)↔⊥ :=
-  iff.trans iff.com (iff_not_self p)
+  iff.trans iff.comm (iff_not_self p)
 lemma true_iff_false: (⊤↔⊥)↔⊥ :=
   iff_false_intro (λh, iff.mp h trivial)
 lemma false_iff_true: (⊥↔⊤)↔⊥ :=
-  iff.trans iff.com true_iff_false
+  iff.trans iff.comm true_iff_false
 lemma false_of_true_iff_false: (⊤↔⊥)→⊥ :=
   true_iff_false.mp
 lemma false_of_true_eq_false: (⊤=⊥)→⊥ :=
@@ -265,3 +266,146 @@ lemma or.imp_left (h: a→b): a∨c → b∨c :=
   or.imp h id
 lemma or.imp_right (h:a→b): c∨a → c∨b :=
   or.imp id h
+lemma or_congr (hac: a↔c) (hbd: b↔d): a∨b ↔ c∨d :=
+  iff.intro (or.imp hac.mp hbd.mp) (or.imp hac.mpr hbd.mpr)
+lemma or.comm: a∨b ↔ b∨a :=
+  iff.intro or.swap or.swap
+lemma or_comm (p q: 𝔹): p∨q ↔ q∨p := or.comm
+lemma or.assoc: (a∨b)∨c ↔ a∨(b∨c) :=
+  iff.intro
+    (or.rec (or.imp_right or.inl) (λh, or.inr $ or.inr h))
+    (or.rec (λh, or.inl $ or.inl h) (or.imp_left or.inr))
+lemma or_assoc (p q: 𝔹): (p∨q)∨c ↔ p∨(q∨c) := or.assoc
+lemma or.left_com: a∨(b∨c) ↔ b∨(a∨c) := 
+  iff.trans
+    (or.assoc.symm)
+    (iff.trans (or_congr or.comm (iff.refl c)) or.assoc)
+theorem or_iff_right_of_imp (ha: a → b): a∨b ↔ b :=
+  iff.intro (or.rec ha id) or.inr 
+theorem or_iff_left_of_imp (hb: b → a): a∨b ↔ a :=
+  iff.trans or.comm $ or_iff_right_of_imp hb
+@[simp] lemma or_true (p: 𝔹): p∨⊤ ↔ ⊤ := 
+  iff.intro (or.rec (λhp, trivial) id) or.inr
+@[simp] lemma true_or (p: 𝔹): ⊤∨p ↔ ⊤ := 
+  iff.trans or.comm $ or_true p
+@[simp] lemma or_false (p: 𝔹): p∨⊥ ↔ p :=
+  iff.intro (or.rec id false.elim) or.inl
+@[simp] lemma false_or (p: 𝔹): ⊥∨p ↔ p :=
+  iff.trans or.comm $ or_false p
+@[simp] lemma or_self (p: 𝔹): p∨p ↔ p := 
+  iff.intro (or.rec id id) or.inl
+lemma not_or {p q: 𝔹}: ¬p → ¬q → ¬(p ∨ q) :=
+  λhnp, λhnq, λhpq: p∨q,
+    or.rec hnp hnq hpq
+
+/-! or resolution rules -/
+
+lemma or.resolve_left {p q: 𝔹} (h: p ∨ q) (np: ¬p): q :=
+  or.rec (λhp, false.elim (np hp)) (λhq, hq) h 
+lemma or.neg_resolve_left {p q: 𝔹} (h: ¬p ∨ q) (hp: p): q :=
+  or.rec (λnp, false.elim (np hp)) (λhq, hq) h
+lemma or.resolve_right {p q: 𝔹} (h: p ∨ q) (nq: ¬q): p :=
+  or.rec (λhp, hp) (λhq, false.elim (nq hq)) h
+lemma or.neg_resolve_right {p q: 𝔹} (h: p ∨ ¬q) (hq: q): p :=
+  or.rec (λhp, hp) (λnq, false.elim (nq hq)) h
+
+/-! iff simp rules -/
+
+@[simp] lemma iff_true (p: 𝔹): (p↔⊤)↔p :=
+  iff.intro (λh, h.mpr trivial) iff_true_intro
+@[simp] lemma true_iff (p: 𝔹): (⊤↔p)↔p :=
+  iff.trans iff.comm $ iff_true p 
+@[simp] lemma iff_false (p: 𝔹): (p↔⊥)↔¬p :=
+  iff.intro iff.mp iff_false_intro
+@[simp] lemma false_iff (p: 𝔹): (⊥↔p)↔¬p :=
+  iff.trans iff.comm $ iff_false p
+@[simp] lemma iff_self (p: 𝔹): (p↔p)↔⊤ :=
+  iff.intro (λ_, trivial) (λ_, iff.refl p)
+lemma iff_congr (hac: a↔c) (hbd: b↔d): (a↔b) ↔ (c↔d) :=
+  iff.intro
+    (λhab, iff.trans hac.symm $ iff.trans hab hbd)
+    (λhcd, iff.trans hac $ iff.trans hcd hbd.symm)
+
+/-! implies simp rule -/
+@[simp] lemma implies_true_iff (α: Sort u): (α→⊤) ↔ ⊤ :=
+  iff.intro (λ_, trivial) (λ_, λ_, trivial)
+lemma false_implies_iff (p: 𝔹): (⊥→p) ↔ ⊤ :=
+  iff.intro (λ_, trivial) (λ_, λh, false.elim h) 
+theorem true_implies_iff (p: 𝔹): (⊤→p) ↔ p :=
+  iff.intro (λh, h trivial) (λhp, λ_, hp)
+
+/-! existential quantifier -/
+inductive Exists {α: Sort u} (p: α → 𝔹): 𝔹
+  | intro (w: α) (h: p w): Exists
+attribute [intro] Exists.intro
+
+notation `∃` binders `, ` r:(scoped P, Exists P) := r
+@[pattern] def exists.intro {α: Sort u} {p: α → 𝔹} (w: α) (h: p w): ∃x, p x := Exists.intro w h
+
+lemma exists.elim {α: Sort u} {p: α → 𝔹} {b: 𝔹}
+  (h₁: ∃x, p x) (h₂: ∀a: α, p a → b): b :=
+    Exists.rec h₂ h₁
+
+/-! exists unique -/
+
+def exists_unique {α: Sort u} (p: α → 𝔹) :=
+  ∃x: α, p x ∧ ∀y: α, p y → y = x
+notation `∃!` binders `, ` r:(scoped P, exists_unique P) := r
+
+@[intro]
+lemma exists_unique.intro {α: Sort u} {p: α → 𝔹} (w: α) (h₁: p w) (h₂: ∀y, p y → y = w) : ∃!x, p x :=
+  exists.intro w $ and.intro h₁ h₂
+
+attribute [recursor 4]
+lemma exists_unique.elim {α: Sort u} {p: α → 𝔹} {b: 𝔹} (h₂: ∃!x, p x) (h₁: ∀x, p x → (∀y, p y → y=x) → b): b :=
+  exists.elim h₂ (λx, λhu, h₁ x hu.elim_left hu.elim_right)
+
+lemma exists_unique_of_exists_of_unique {α: Sort u} {p: α → 𝔹}
+  (hex: ∃x, p x) (hu: ∀ y₁ y₂, p y₁ → p y₂ → y₁ = y₂): ∃!x, p x :=
+    exists.elim hex (λx, λpx, 
+      exists_unique.intro x px $ λy, λpy, eq.symm (hu x y px py))
+
+lemma unique_of_exists_unique {α: Sort u} {p: α → 𝔹}
+  (h: ∃! x, p x) {y₁ y₂: α} (py₁: p y₁) (py₂: p y₂): y₁ = y₂ :=
+    h.elim (λx, λpx, λfy, eq.trans (fy y₁ py₁) (fy y₂ py₂).symm)
+
+lemma exists_of_exists_unique {α: Sort u} {p: α → 𝔹} (h: ∃!x, p x): ∃ x, p x :=
+  exists.elim h (λa, λhu, exists.intro a hu.elim_left)
+
+/-! exists, forall, exists unique congruences -/
+@[congr] lemma forall_congr {α: Sort u} {p q: α → 𝔹} (h: ∀a, p a ↔ q a): (∀a, p a) ↔ (∀a, q a) :=
+  iff.intro
+    (λhpa, λa, (h a).mp $ hpa a)
+    (λhqa, λa, (h a).mpr $ hqa a)
+lemma exists_imp_exists {α: Sort u} {p q: α → 𝔹} (h: ∀a, (p a → q a)) (j: ∃a, p a): ∃a, q a :=
+  exists.elim j (λa, λpa, exists.intro a $ h a pa)
+lemma exists_congr {α: Sort u} {p q: α → 𝔹} (h: ∀a, p a ↔ q a): (∃a, p a) ↔ (∃a, q a) :=
+  iff.intro (exists_imp_exists (λa, (h a).mp)) (exists_imp_exists (λa, (h a).mpr))
+lemma exists_unique_congr {α: Sort u} {p₁ p₂: α → 𝔹} (h: ∀x, p₁ x ↔ p₂ x): (∃!x, p₁ x) ↔ (∃!x, p₂ x) :=
+  exists_congr (λx, and_congr (h x) (forall_congr (λy, imp_congr (h y) iff.rfl)))
+lemma forall_not_of_exists {α: Sort u} {p: α → 𝔹}: ¬(∃x, p x) → (∀x, ¬p x) :=
+  λne, λx, λpx, absurd (exists.intro x px) ne
+
+/-! propositional extensionality -/
+axiom propext {a b : 𝔹} : (a↔b) → (a=b)
+
+lemma forall_congr_eq {a: Sort u} {p q: a → 𝔹} (h: ∀x, p x = q x): (∀x, p x) = (∀x, q x) :=
+  propext $ forall_congr (λa, (h a).to_iff)
+
+lemma imp_congr_eq {a b c d: 𝔹} (h₁: a=c) (h₂: b=d): (a→b) = (c→d) :=
+  propext $ imp_congr h₁.to_iff h₂.to_iff
+
+lemma imp_congr_ctx_eq {a b c d: 𝔹} (h₁: a = c) (h₂: c → (b=d)): (a→b) = (c→d) :=
+  propext $ imp_congr_ctx h₁.to_iff (λhc, (h₂ hc).to_iff)
+
+lemma eq_true_intro {a: 𝔹} (h: a): a=⊤ :=
+  propext $ iff_true_intro h
+
+lemma eq_false_intro {a: 𝔹} (h: ¬a): a=⊥ :=
+  propext $ iff_false_intro h
+
+theorem iff.to_eq {a b: 𝔹} (h: a↔b): a=b :=
+  propext $ h
+
+theorem iff_eq_eq {a b: 𝔹}: (a↔b) = (a=b) :=
+  propext $ iff.intro iff.to_eq eq.to_iff
