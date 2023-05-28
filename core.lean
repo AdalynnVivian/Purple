@@ -143,5 +143,3 @@ instance nat_has_one: has_one ℕ := has_one.mk (nat.succ nat.zero)
 instance nat_add_nat: has_add ℕ ℕ ℕ := has_add.mk nat.add
 
 lemma nat_add_zero (n: ℕ): n + 0 = n := eq.refl n
-
-#check [1, 1]
