@@ -36,7 +36,7 @@ class has_postfix_question_mark(α: Sort u)(β: out_param $ Sort v) :=
   (postfix_question_mark: α → β)
 postfix `?`:1034 := has_postfix_question_mark.postfix_question_mark
 
-class has_comp(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
+class has_comp(α: out_param $ Sort u )(β: out_param $ Sort v)(γ: Sort w ) :=
   (comp: α → β → γ)
 infixl ` ∘ `:90 := has_comp.comp
 
@@ -51,6 +51,7 @@ infix ` = `:50 := has_eq.eq
 class has_ne(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
   (ne: α → β → γ)
 infix ` ≠ `:50 := has_ne.ne
+
 class has_lnot(α: Sort u)(β: out_param $ Sort v) :=
   (lnot: α → β)
 prefix `¬`:40 := has_lnot.lnot
