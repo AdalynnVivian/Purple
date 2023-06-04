@@ -56,6 +56,7 @@ instance Sort_rightarrowtail_Sort: has_rightarrowtail (Sort u₁) (Sort u₂) (S
   has_rightarrowtail.mk injective
 instance injective_to_function: has_coe_to_fun (α ↪ β) (λf, α → β) :=
   has_coe_to_fun.mk (λx: α ↪ β, x.fst)
+def inj_is_inj(f: α ↪ β): is_injective f.fst := f.snd
 lemma injective.comp (g: β ↪ γ) (f: α ↪ β): α ↪ γ :=
   ⟨(g: β → γ) ∘ (f: α → β),
   λ⦃a₁ a₂: α⦄, λh, f.snd (g.snd h)⟩ --I want to use `implies.trans` there. I can't!
@@ -67,6 +68,7 @@ instance Sort_twoheadrightarrow_Sort: has_twoheadrightarrow (Sort u₁) (Sort u�
   has_twoheadrightarrow.mk surjective
 instance surjective_to_function: has_coe_to_fun (α ↠ β) (λf, α → β) :=
   has_coe_to_fun.mk (λx: α ↠ β, x.fst)
+def sur_is_sur(f: α ↠ β): is_surjective f.fst := f.snd
 lemma surjective.comp (g: β ↠ γ) (f: α ↠ β): α ↠ γ := 
   ⟨(g: β→γ)∘(f: α→β), λc: γ, (do
     let gc: ∃b: β, g b = c := g.snd c,
@@ -79,16 +81,5 @@ lemma surjective.comp (g: β ↠ γ) (f: α ↠ β): α ↠ γ :=
       exists.elim fb Fa),
     exists.elim gc Fb)⟩
 infixr (name := sur_comp_sur) ` ∘ `:90  := function.surjective.comp
-def is_bijective(f: α → β) := is_injective f ∧ is_surjective f
-def bijective(α: Sort u₁)(β: Sort u₂): Sort (max 1 (imax u₁ u₂)) := Σ'f: α → β, is_bijective f
-instance Sort_twoheadrightarrowtail_Sort: has_twoheadrightarrowtail (Sort u₁) (Sort u₂) (Sort (max 1 (imax u₁ u₂))) :=
-  has_twoheadrightarrowtail.mk bijective
-instance bijective_to_injective: has_coe (α ⤖ β) (α ↪ β) :=
-  has_coe.mk (λf, ⟨f.fst, f.snd.elim_left⟩)
-instance bijective_to_surjective: has_coe (α ⤖ β) (α ↠ β) :=
-  has_coe.mk (λf, ⟨f.fst, f.snd.elim_right⟩)
-instance bijective_to_function: has_coe_to_fun(α ⤖ β) (λf,α → β) :=
-  has_coe_to_fun.mk (λf, f.fst)
-lemma bijective.comp (g: β ⤖ γ) (f: α ⤖ β): α ⤖ γ :=
-  sorry --Blegh, coercion hell
+-- Blegh I see why injective, surjective, and bijective aren't types now!
 end function
