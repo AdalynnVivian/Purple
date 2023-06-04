@@ -36,10 +36,7 @@ class has_postfix_question_mark(α: Sort u)(β: out_param $ Sort v) :=
   (postfix_question_mark: α → β)
 postfix `?`:1034 := has_postfix_question_mark.postfix_question_mark
 
-class has_comp(α: out_param $ Sort u )(β: out_param $ Sort v)(γ: Sort w ) :=
-  (comp: α → β → γ)
-infixl ` ∘ `:90 := has_comp.comp
-
+-- Function composition doesn't want to work
 
 class has_add(α: Sort u)(β: Sort v)(γ: out_param $ Sort w) :=
   (add: α → β → γ)

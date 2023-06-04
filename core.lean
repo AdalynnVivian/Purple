@@ -105,7 +105,7 @@ structure sigma {α: Type u} (β: α → Type v) :=
   (fst: α)
   (snd: β fst)
 notation `Σ` binders `, ` r:(scoped P, sigma P) := r
-structure psigma {α: Sort u} {β: α → Sort v} :=
+structure psigma {α: Sort u} (β: α → Sort v) :=
   (fst: α)
   (snd: β fst)
 notation `Σ'` binders `, ` r:(scoped P, psigma P) := r
